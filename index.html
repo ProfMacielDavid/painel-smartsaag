@@ -17,6 +17,7 @@
       margin: 0;
       padding: 0;
       text-align: center;
+      transition: background 0.3s, color 0.3s;
     }
     .logo-bar { background: #e0f7f1; padding: 10px 0; }
     .logo-bar img { height: 48px; }
@@ -24,13 +25,41 @@
     .grafico-container {
       width: 90%; max-width: 480px; margin: 15px auto; background: white;
       padding: 15px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: background 0.3s;
     }
     canvas { width: 100% !important; height: 220px !important; }
     h3 { font-size: 1rem; margin-bottom: 10px; }
     footer { margin-top: 20px; font-size: 0.9rem; color: #888; }
+    .btn-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
+    }
+    .btn-container button {
+      margin-left: 5px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      background: #005f56;
+      color: white;
+      cursor: pointer;
+    }
+    body.dark-mode {
+      background: #121212;
+      color: #f0f0f0;
+    }
+    body.dark-mode .grafico-container {
+      background: #1e1e1e;
+    }
   </style>
 </head>
 <body>
+  <div class="btn-container">
+    <button id="btn-darkmode">🌙 Modo Escuro</button>
+    <button id="btn-reset">🔄 Resetar Gráficos</button>
+  </div>
+
   <header>
     <div class="logo-bar">
       <img src="https://i.ibb.co/qMHk2Sjw/LOGO-2.png" alt="Smart SAAG Logo" />
@@ -110,7 +139,7 @@
       chartUmid.update();
       chartOxig.data.datasets[0].data[0] = oxig;
       chartOxig.update();
-     
+
       fetch("https://script.google.com/macros/s/AKfycbzj_eLUQ80CD_E8QI9Kdh_gsOZ6qJ6Ho-eQffMob58vfB5HgCJJ0chTFWujdloAYB6vCA/exec", {
         method: "POST",
         headers: {
@@ -125,8 +154,19 @@
       .then(response => response.text())
       .then(data => console.log("✅ Dados enviados para o Sheets:", data))
       .catch(error => console.error("❌ Erro ao enviar para o Sheets:", error));
+    });
 
+    document.getElementById("btn-darkmode").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
 
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      labels.length = 0;
+      dadosTemp.length = 0;
+      dadosUmid.length = 0;
+      chartTemp.update();
+      chartUmid.update();
+      console.log("❌ Gráficos resetados!");
     });
   </script>
 </body>
