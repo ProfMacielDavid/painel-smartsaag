@@ -1,18 +1,4 @@
 
-<!--
-Versão 10.0 _Final_28/03/2025_17:20hs — Monitor de Aquaponia - Murylo
-Funcionalidades:
-- Interface Web responsiva via GitHub Pages
-- Envio de dados via MQTT (HiveMQ Cloud) com TLS
-- Gráficos de temperatura, umidade e oxigênio (via painel remoto)
-- Envio direto de dados do ESP32 para Google Sheets (sem CORS)
-- Suporte a sensores DHT22 e valor simulado de oxigênio
-- Respostas no monitor serial para depuração
-
-Gerado em 28/03/2025 às 17:20:00
-Autor: David Maciel (Smart SAAG)
--->
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -31,7 +17,6 @@ Autor: David Maciel (Smart SAAG)
       margin: 0;
       padding: 0;
       text-align: center;
-      transition: background 0.3s, color 0.3s;
     }
     .logo-bar { background: #e0f7f1; padding: 10px 0; }
     .logo-bar img { height: 48px; }
@@ -39,45 +24,13 @@ Autor: David Maciel (Smart SAAG)
     .grafico-container {
       width: 90%; max-width: 480px; margin: 15px auto; background: white;
       padding: 15px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      transition: background 0.3s;
     }
     canvas { width: 100% !important; height: 220px !important; }
     h3 { font-size: 1rem; margin-bottom: 10px; }
     footer { margin-top: 20px; font-size: 0.9rem; color: #888; }
-    .btn-container {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: row;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    @media (max-width: 600px) {
-      .btn-container {
-        top: auto;
-        bottom: 10px;
-        left: 10px;
-        right: auto;
-        flex-direction: column;
-      }
-    }
-    body.dark-mode {
-      background: #121212;
-      color: #f0f0f0;
-    }
-    body.dark-mode .grafico-container {
-      background: #1e1e1e;
-    }
   </style>
 </head>
 <body>
-  <div class="btn-container">
-    <button id="btn-darkmode">🌙 Modo Escuro</button>
-    <button id="btn-reset">🔄 Resetar Gráficos</button>
-  </div>
-
   <header>
     <div class="logo-bar">
       <img src="https://i.ibb.co/qMHk2Sjw/LOGO-2.png" alt="Smart SAAG Logo" />
@@ -172,19 +125,6 @@ Autor: David Maciel (Smart SAAG)
       .then(response => response.text())
       .then(data => console.log("✅ Dados enviados para o Sheets:", data))
       .catch(error => console.error("❌ Erro ao enviar para o Sheets:", error));
-    });
-
-    document.getElementById("btn-darkmode").addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-    });
-
-    document.getElementById("btn-reset").addEventListener("click", () => {
-      labels.length = 0;
-      dadosTemp.length = 0;
-      dadosUmid.length = 0;
-      chartTemp.update();
-      chartUmid.update();
-      console.log("❌ Gráficos resetados!");
     });
   </script>
 </body>
