@@ -7,10 +7,10 @@ Funcionalidades:
 - Gráficos de temperatura, umidade e oxigênio (via painel remoto)
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
-- Remoção do som de alerta
+- Ajustes visuais: tamanhos proporcionais, linha de gráfico mais fina, escala personalizada
 - Respostas no monitor serial para depuração
 
-Atualizado em 28/03/2025 às 19:00:00
+Atualizado em 28/03/2025 às 19:10:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -68,6 +68,13 @@ Autor: David Maciel (Smart SAAG)
       font-size: 1rem;
       margin-bottom: 10px;
     }
+    h3 span {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
     .alerta {
       background: #ffdddd;
       border: 1px solid red;
@@ -96,17 +103,17 @@ Autor: David Maciel (Smart SAAG)
   <div id="alertBox"></div>
 
   <div class="grafico-container">
-    <h3><span style="color:red;">&#9632;</span> Temperatura: <span id="temp">--</span> °C</h3>
+    <h3><span style="background:red;"></span>Temperatura: <span id="temp">--</span> °C</h3>
     <canvas id="chartTemp"></canvas>
   </div>
 
   <div class="grafico-container">
-    <h3><span style="color:green;">&#9632;</span> Umidade: <span id="umid">--</span> %</h3>
+    <h3><span style="background:green;"></span>Umidade: <span id="umid">--</span> %</h3>
     <canvas id="chartUmid"></canvas>
   </div>
 
   <div class="grafico-container">
-    <h3><span style="color:darkblue;">&#9632;</span> Oxigênio Dissolvido: <span id="oxig">--</span> mg/L</h3>
+    <h3><span style="background:darkblue;"></span>Oxigênio Dissolvido: <span id="oxig">--</span> mg/L</h3>
     <canvas id="chartOxig"></canvas>
   </div>
 
@@ -147,13 +154,13 @@ Autor: David Maciel (Smart SAAG)
 
     const chartTemp = new Chart(document.getElementById('chartTemp').getContext('2d'), {
       type: 'line',
-      data: { labels, datasets: [{ label: 'Temperatura (°C)', data: dadosTemp, borderColor: 'red', fill: false }] },
-      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+      data: { labels, datasets: [{ label: 'Temperatura (°C)', data: dadosTemp, borderColor: 'red', borderWidth: 1.5, fill: false }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, ticks: { stepSize: 1 } } } }
     });
 
     const chartUmid = new Chart(document.getElementById('chartUmid').getContext('2d'), {
       type: 'line',
-      data: { labels, datasets: [{ label: 'Umidade (%)', data: dadosUmid, borderColor: 'green', fill: false }] },
+      data: { labels, datasets: [{ label: 'Umidade (%)', data: dadosUmid, borderColor: 'green', borderWidth: 1.5, fill: false }] },
       options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
     });
 
