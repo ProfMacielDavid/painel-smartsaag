@@ -1,17 +1,17 @@
 
 <!--
-Versão 11.5 _Reset_28/03/2025_Gráficos com Botão de Reset
+Versão 12.0 _Status MQTT_28/03/2025_Indicador Visual de Conexão
 Funcionalidades:
 - Interface Web responsiva via GitHub Pages
 - Envio de dados via MQTT (HiveMQ Cloud) com TLS
 - Gráficos de temperatura, umidade e oxigênio (via painel remoto)
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
-- Ajustes visuais refinados: espaçamento, escala e botão de reset
-- Botão "Resetar Gráficos" funcional e responsivo
-- Respostas no monitor serial para depuração
+- Botão de reset dos gráficos
+- Indicador de status de conexão MQTT em tempo real (🟢/🔴)
+- Ajustes visuais refinados
 
-Atualizado em 28/03/2025 às 19:40:00
+Atualizado em 28/03/2025 às 19:50:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -46,6 +46,14 @@ Autor: David Maciel (Smart SAAG)
       color: white;
       font-size: 1.5rem;
       padding: 10px 0;
+      position: relative;
+    }
+    #statusMQTT {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
     }
     .grafico-container {
       width: 90%;
@@ -115,7 +123,10 @@ Autor: David Maciel (Smart SAAG)
     <div class="logo-bar">
       <img src="https://i.ibb.co/qMHk2Sjw/LOGO-2.png" alt="Smart SAAG Logo" />
     </div>
-    <div class="titulo-bar">MONITOR AQUAPONIA - MURYLO </div>
+    <div class="titulo-bar">
+      MONITOR AQUAPONIA - MURYLO
+      <span id="statusMQTT">🛜 <span style="color: red;">Desconectado</span></span>
+    </div>
   </header>
 
   <div id="alertBox"></div>
@@ -141,6 +152,13 @@ Autor: David Maciel (Smart SAAG)
 
   <script>
     const alertaBox = document.getElementById("alertBox");
+    const statusMQTT = document.getElementById("statusMQTT");
+
+    function atualizarStatus(conectado) {
+      statusMQTT.innerHTML = conectado
+        ? "🛜 <span style='color: limegreen;'>Conectado</span>"
+        : "🛜 <span style='color: red;'>Desconectado</span>";
+    }
 
     function verificarAlertas(temp, umid, oxig) {
       let mensagens = [];
@@ -148,11 +166,7 @@ Autor: David Maciel (Smart SAAG)
       if (umid < 20) mensagens.push(`Umidade baixa: ${umid} %`);
       if (oxig < -1) mensagens.push(`Oxigênio crítico: ${oxig} mg/L`);
 
-      if (mensagens.length > 0) {
-        alertaBox.innerHTML = `<div class="alerta">🔔 ${mensagens.join('<br>')}</div>`;
-      } else {
-        alertaBox.innerHTML = "";
-      }
+      alertaBox.innerHTML = mensagens.length > 0 ? `<div class="alerta">🔔 ${mensagens.join('<br>')}</div>` : "";
     }
 
     const client = mqtt.connect("wss://e4fa5bda5dea4c8fab6d31e942111138.s1.eu.hivemq.cloud:8884/mqtt", {
@@ -164,11 +178,16 @@ Autor: David Maciel (Smart SAAG)
 
     client.on("connect", () => {
       console.log("✅ Conectado ao MQTT remoto!");
+      atualizarStatus(true);
       client.subscribe(topic, err => {
         if (!err) console.log("📡 Inscrito no tópico:", topic);
         else console.error("Erro ao inscrever:", err);
       });
     });
+
+    client.on("close", () => atualizarStatus(false));
+    client.on("offline", () => atualizarStatus(false));
+    client.on("reconnect", () => atualizarStatus(false));
 
     let dadosTemp = [], dadosUmid = [], labels = [];
 
