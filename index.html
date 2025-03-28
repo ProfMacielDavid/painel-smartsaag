@@ -110,6 +110,22 @@
       chartUmid.update();
       chartOxig.data.datasets[0].data[0] = oxig;
       chartOxig.update();
+     
+      fetch("https://script.google.com/macros/s/AKfycbz4VUyVKuJu5L-RZKJSvAy0l-KDDG0aIvKF8aYYGWp5j0i5zyxUMeSerRzGaN5MZOin/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          temperatura: temp,
+          umidade: umid,
+          oxigenio: oxig
+        })
+      })
+      .then(response => response.text())
+      .then(data => console.log("✅ Dados enviados para o Sheets:", data))
+      .catch(error => console.error("❌ Erro ao enviar para o Sheets:", error));
+
     });
   </script>
 </body>
