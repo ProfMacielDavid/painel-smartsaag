@@ -1,5 +1,4 @@
 
-<!-- substitua apenas este trecho final do script.js -->
 <script>
   const client = mqtt.connect("wss://e4fa5bda5dea4c8fab6d31e942111138.s1.eu.hivemq.cloud:8884/mqtt", {
     username: "usuario_smartsaag",
@@ -15,7 +14,9 @@
     });
   });
 
-  let dadosTemp = [], dadosUmid = [], labels = [];
+  let dadosTemp = [];
+  let dadosUmid = [];
+  let labels = [];
 
   const ctxTemp = document.getElementById('chartTemp').getContext('2d');
   const chartTemp = new Chart(ctxTemp, {
@@ -96,20 +97,18 @@
     chartOxig.data.datasets[0].data[0] = oxig;
     chartOxig.update();
 
-    // Enviar para Google Sheets com feedback
+    // Envia para Google Sheets via Google Apps Script
     fetch("https://script.google.com/macros/s/AKfycbye2xuc_jOcPstV96jnP1rfC_DvglnLC9sMeP7ei0jRg4tnx_p90BFvdHzffRo2Q5z02g/exec", {
       method: "POST",
-      mode: "no-cors", // IMPORTANTE para funcionar sem CORS mesmo que sem retorno
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         temperatura: temp,
         umidade: umid,
         oxigenio: oxig
       })
     })
-    .then(() => console.log("Dados enviados para Google Sheets com sucesso!"))
-    .catch(error => console.error("Erro ao enviar para Google Sheets:", error));
+    .then(() => console.log("Dados enviados para o Google Sheets."))
+    .catch(err => console.error("Erro ao enviar para planilha:", err));
   });
 </script>
