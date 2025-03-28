@@ -225,19 +225,26 @@
       chartOxig.data.datasets[0].data[0] = oxig;
       chartOxig.update();
 
-      // Enviar para Google Sheets com feedback
-      fetch("https://script.google.com/macros/s/AKfycbye2xuc_jOcPstV96jnP1rfC_DvglnLC9sMeP7ei0jRg4tnx_p90BFvdHzffRo2Q5z02g/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          temperatura: temp,
-          umidade: umid,
-          oxigenio: oxig
-        })
-      })
+    // Enviar para Google Sheets
+fetch("https://script.google.com/macros/s/AKfycbye2xuc_jOcPstV96jnP1rfC_DvglnLC9sMeP7ei0jRg4tnx_p90BFvdHzffRo2Q5z02g/exec", {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    temperatura: temp,
+    umidade: umid,
+    oxigenio: oxig
+  })
+})
+.then(() => {
+  console.log("✅ Dados enviados para o Google Sheets com sucesso!");
+})
+.catch((error) => {
+  console.error("❌ Falha ao enviar dados para o Google Sheets:", error);
+});
+
       .then(() => mostrarAlerta("Gravação realizada com sucesso!", "sucesso"))
       .catch(() => mostrarAlerta("Erro ao gravar os dados!", "erro"));
     });
