@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Remoto - Aquaponia Smart SAAG</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      margin: 0; padding: 20px;
+    }
+    h1 {
+      color: #005f56;
+    }
+    .grafico-container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel Remoto - Smart SAAG</h1>
+
+  <div class="grafico-container">
+    <h3>Temperatura: <span id="temp">--</span> °C</h3>
+    <canvas id="chartTemp"></canvas>
+  </div>
+
+  <div class="grafico-container">
+    <h3>Umidade: <span id="umid">--</span> %</h3>
+    <canvas id="chartUmid"></canvas>
+  </div>
+
+  <script>
+    const tempData = [], umidData = [], labels = [];
+    const ctxT = document.getElementById('chartTemp').getContext('2d');
+    const ctxU = document.getElementById('chartUmid').getContext('2d');
+
+    const chartTemp = new Chart(ctxT, {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'Temp (°C)', data: tempData, borderColor: 'red', fill: false }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+    });
+
+    const chartUmid = new Chart(ctxU, {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'Umidade (%)', data: umidData, borderColor: 'green', fill: false }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+    });
+
+    const client = mqtt.connect('wss://e4fa5bda5dea4c8fab6d31e942111138.s1.eu.hivemq.cloud:8884/mqtt', {
+      username: 'usuario_smartsaag',
+      password: 'SmartSaag2025!'
+    });
+
+    client.on('connect', () => {
+      console.log('Conectado ao MQTT!');
+      client.subscribe('smartsaag/aquaponia/dados');
+    });
+
+    client.on('message', (topic, message) => {
+      const payload = JSON.parse(message.toString());
+      const now = new Date().toLocaleTimeString();
+      
+      if (labels.length > 20) { labels.shift(); tempData.shift(); umidData.shift(); }
+
+      labels.push(now);
+      tempData.push(payload.temperatura);
+      umidData.push(payload.umidade);
+
+      document.getElementById('temp').textContent = payload.temperatura;
+      document.getElementById('umid').textContent = payload.umidade;
+
+      chartTemp.update();
+      chartUmid.update();
+    });
+  </script>
+</body>
+</html>
