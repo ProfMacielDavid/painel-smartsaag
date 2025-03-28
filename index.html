@@ -111,7 +111,7 @@
       chartOxig.data.datasets[0].data[0] = oxig;
       chartOxig.update();
      
-      fetch("https://script.google.com/macros/s/AKfycbxvBPboaeJ4ZwAQm5ByLRYG_4GATGrvh4HfYwHj7r56nOfPmzMj9TLeRJvJ-4Ql45k78A/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbzj_eLUQ80CD_E8QI9Kdh_gsOZ6qJ6Ho-eQffMob58vfB5HgCJJ0chTFWujdloAYB6vCA/exec", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -125,6 +125,7 @@
       .then(response => response.text())
       .then(data => console.log("✅ Dados enviados para o Sheets:", data))
       .catch(error => console.error("❌ Erro ao enviar para o Sheets:", error));
+
 
     });
   </script>
