@@ -8,9 +8,10 @@ Funcionalidades:
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
 - Ajustes visuais: tamanhos proporcionais, linha de gráfico mais fina, escala personalizada, espaçamento de °C/%
+- Alerta de umidade ajustado para < 20%
 - Respostas no monitor serial para depuração
 
-Atualizado em 28/03/2025 às 19:15:00
+Atualizado em 28/03/2025 às 19:20:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -128,7 +129,7 @@ Autor: David Maciel (Smart SAAG)
     function verificarAlertas(temp, umid, oxig) {
       let mensagens = [];
       if (temp > 30 || temp < 15) mensagens.push(`Temperatura fora do ideal: ${temp} °C`);
-      if (umid < 50) mensagens.push(`Umidade baixa: ${umid} %`);
+      if (umid < 20) mensagens.push(`Umidade baixa: ${umid} %`);
       if (oxig < -1) mensagens.push(`Oxigênio crítico: ${oxig} mg/L`);
 
       if (mensagens.length > 0) {
