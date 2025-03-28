@@ -47,12 +47,17 @@ Autor: David Maciel (Smart SAAG)
     }
     .grafico-container {
       width: 90%;
-      max-width: 240px;
+      max-width: 480px;
       margin: 15px auto;
       background: white;
       padding: 15px;
       border-radius: 15px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) {
+      .grafico-container {
+        max-width: 70%;
+      }
     }
     canvas {
       width: 100% !important;
