@@ -1,6 +1,6 @@
 
 <!--
-Versão 12.0 _Status MQTT_28/03/2025_Indicador Visual de Conexão
+Versão 12.5 _Modo Escuro_28/03/2025_Botão de Tema Claro/Escuro
 Funcionalidades:
 - Interface Web responsiva via GitHub Pages
 - Envio de dados via MQTT (HiveMQ Cloud) com TLS
@@ -8,10 +8,10 @@ Funcionalidades:
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
 - Botão de reset dos gráficos
-- Indicador de status de conexão MQTT em tempo real (🟢/🔴), agora ao lado esquerdo da logo
-- Ajustes visuais refinados
+- Indicador visual de conexão MQTT (🛜)
+- 🌙 Alternância entre modo claro e escuro
 
-Atualizado em 28/03/2025 às 19:55:00
+Atualizado em 28/03/2025 às 20:00:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -33,6 +33,11 @@ Autor: David Maciel (Smart SAAG)
       margin: 0;
       padding: 0;
       text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: #121212;
+      color: #eee;
     }
     .logo-bar {
       background: #e0f7f1;
@@ -64,6 +69,10 @@ Autor: David Maciel (Smart SAAG)
       padding: 15px;
       border-radius: 15px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+    body.dark .grafico-container {
+      background: #1e1e1e;
     }
     @media (min-width: 768px) {
       .grafico-container {
@@ -99,7 +108,12 @@ Autor: David Maciel (Smart SAAG)
       border-radius: 8px;
       font-weight: bold;
     }
-    #resetBtn {
+    body.dark .alerta {
+      background: #5b1e1e;
+      color: #ffbaba;
+      border-color: #d33;
+    }
+    #resetBtn, #themeBtn {
       background: #005f56;
       color: white;
       border: none;
@@ -107,9 +121,9 @@ Autor: David Maciel (Smart SAAG)
       font-size: 0.95rem;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 20px;
+      margin: 10px 10px;
     }
-    #resetBtn:hover {
+    #resetBtn:hover, #themeBtn:hover {
       background: #007c73;
     }
     footer {
@@ -147,13 +161,24 @@ Autor: David Maciel (Smart SAAG)
     <canvas id="chartOxig"></canvas>
   </div>
 
-  <button id="resetBtn">🔁 Resetar Gráficos</button>
+  <div>
+    <button id="resetBtn">🔁 Resetar Gráficos</button>
+    <button id="themeBtn">🌙 Modo Escuro</button>
+  </div>
 
   <footer>© Direitos autorais de David Maciel</footer>
 
   <script>
     const alertaBox = document.getElementById("alertBox");
     const statusMQTT = document.getElementById("statusMQTT");
+    const themeBtn = document.getElementById("themeBtn");
+
+    themeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      themeBtn.textContent = document.body.classList.contains("dark")
+        ? "☀️ Modo Claro"
+        : "🌙 Modo Escuro";
+    });
 
     function atualizarStatus(conectado) {
       statusMQTT.innerHTML = conectado
