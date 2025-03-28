@@ -1,4 +1,18 @@
 
+<!--
+Versão 10.0 _Final_28/03/2025_17:20hs — Monitor de Aquaponia - Murylo
+Funcionalidades:
+- Interface Web responsiva via GitHub Pages
+- Envio de dados via MQTT (HiveMQ Cloud) com TLS
+- Gráficos de temperatura, umidade e oxigênio (via painel remoto)
+- Envio direto de dados do ESP32 para Google Sheets (sem CORS)
+- Suporte a sensores DHT22 e valor simulado de oxigênio
+- Respostas no monitor serial para depuração
+
+Gerado em 28/03/2025 às 17:20:00
+Autor: David Maciel (Smart SAAG)
+-->
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -34,16 +48,20 @@
       position: fixed;
       top: 10px;
       right: 10px;
-      z-index: 999;
+      z-index: 9999;
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+      flex-wrap: wrap;
     }
-    .btn-container button {
-      margin-left: 5px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 5px;
-      background: #005f56;
-      color: white;
-      cursor: pointer;
+    @media (max-width: 600px) {
+      .btn-container {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: auto;
+        flex-direction: column;
+      }
     }
     body.dark-mode {
       background: #121212;
