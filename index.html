@@ -65,6 +65,24 @@
       color: #888;
     }
 
+    #alerta {
+      display: none;
+      padding: 10px;
+      margin: 10px auto;
+      border-radius: 8px;
+      max-width: 400px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .sucesso {
+      background-color: #4CAF50;
+    }
+
+    .erro {
+      background-color: #f44336;
+    }
+
     @media screen and (max-width: 600px) {
       .grafico-container {
         max-width: 95%;
@@ -104,6 +122,8 @@
     <h3><span style="color:darkblue;">&#9632;</span> Oxigênio Dissolvido: <span id="oxig">--</span> mg/L</h3>
     <canvas id="chartOxig"></canvas>
   </div>
+
+  <div id="alerta"></div>
 
   <footer>© Direitos autorais de David Maciel</footer>
 
@@ -205,7 +225,7 @@
       chartOxig.data.datasets[0].data[0] = oxig;
       chartOxig.update();
 
-      // Enviar para Google Sheets
+      // Enviar para Google Sheets com feedback
       fetch("https://script.google.com/macros/s/AKfycbye2xuc_jOcPstV96jnP1rfC_DvglnLC9sMeP7ei0jRg4tnx_p90BFvdHzffRo2Q5z02g/exec", {
         method: "POST",
         mode: "no-cors",
@@ -217,8 +237,20 @@
           umidade: umid,
           oxigenio: oxig
         })
-      });
+      })
+      .then(() => mostrarAlerta("Gravação realizada com sucesso!", "sucesso"))
+      .catch(() => mostrarAlerta("Erro ao gravar os dados!", "erro"));
     });
+
+    function mostrarAlerta(msg, tipo) {
+      const alerta = document.getElementById('alerta');
+      alerta.textContent = msg;
+      alerta.className = tipo;
+      alerta.style.display = 'block';
+      setTimeout(() => {
+        alerta.style.display = 'none';
+      }, 4000);
+    }
   </script>
 </body>
 </html>
