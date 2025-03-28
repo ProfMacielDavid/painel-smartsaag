@@ -8,10 +8,10 @@ Funcionalidades:
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
 - Botão de reset dos gráficos
-- Indicador de status de conexão MQTT em tempo real (🟢/🔴)
+- Indicador de status de conexão MQTT em tempo real (🟢/🔴), agora ao lado esquerdo da logo
 - Ajustes visuais refinados
 
-Atualizado em 28/03/2025 às 19:50:00
+Atualizado em 28/03/2025 às 19:55:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -37,23 +37,24 @@ Autor: David Maciel (Smart SAAG)
     .logo-bar {
       background: #e0f7f1;
       padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
     .logo-bar img {
       height: 48px;
+    }
+    #statusMQTT {
+      position: absolute;
+      left: 15px;
+      font-size: 0.85rem;
     }
     .titulo-bar {
       background: #005f56;
       color: white;
       font-size: 1.5rem;
       padding: 10px 0;
-      position: relative;
-    }
-    #statusMQTT {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.9rem;
     }
     .grafico-container {
       width: 90%;
@@ -121,11 +122,11 @@ Autor: David Maciel (Smart SAAG)
 <body>
   <header>
     <div class="logo-bar">
+      <span id="statusMQTT">🛜 <span style="color: red;">Desconectado</span></span>
       <img src="https://i.ibb.co/qMHk2Sjw/LOGO-2.png" alt="Smart SAAG Logo" />
     </div>
     <div class="titulo-bar">
       MONITOR AQUAPONIA - MURYLO
-      <span id="statusMQTT">🛜 <span style="color: red;">Desconectado</span></span>
     </div>
   </header>
 
