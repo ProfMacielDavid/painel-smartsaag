@@ -1,17 +1,17 @@
 
 <!--
-Versão 11.0 _Alerta Contínuo_28/03/2025_Manutenção Visual sem Som
+Versão 11.5 _Reset_28/03/2025_Gráficos com Botão de Reset
 Funcionalidades:
 - Interface Web responsiva via GitHub Pages
 - Envio de dados via MQTT (HiveMQ Cloud) com TLS
 - Gráficos de temperatura, umidade e oxigênio (via painel remoto)
 - Envio direto de dados do ESP32 para Google Sheets (sem CORS)
 - Alertas visuais persistentes enquanto os valores estiverem fora da faixa ideal
-- Ajustes visuais: tamanhos proporcionais, linha de gráfico mais fina, escala personalizada, espaçamento de °C/%
-- Alerta de umidade ajustado para < 20%
+- Ajustes visuais refinados: espaçamento, escala e botão de reset
+- Botão "Resetar Gráficos" funcional e responsivo
 - Respostas no monitor serial para depuração
 
-Atualizado em 28/03/2025 às 19:20:00
+Atualizado em 28/03/2025 às 19:40:00
 Autor: David Maciel (Smart SAAG)
 -->
 
@@ -77,7 +77,8 @@ Autor: David Maciel (Smart SAAG)
       margin-right: 6px;
     }
     .unidade {
-      margin-left: 4px;
+      display: inline-block;
+      margin-left: 6px;
     }
     .alerta {
       background: #ffdddd;
@@ -89,8 +90,21 @@ Autor: David Maciel (Smart SAAG)
       border-radius: 8px;
       font-weight: bold;
     }
-    footer {
+    #resetBtn {
+      background: #005f56;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
       margin-top: 20px;
+    }
+    #resetBtn:hover {
+      background: #007c73;
+    }
+    footer {
+      margin-top: 30px;
       font-size: 0.9rem;
       color: #888;
     }
@@ -107,19 +121,21 @@ Autor: David Maciel (Smart SAAG)
   <div id="alertBox"></div>
 
   <div class="grafico-container">
-    <h3><span style="background:red;"></span>Temperatura: <span id="temp">--</span><span class="unidade"> °C</span></h3>
+    <h3><span style="background:red;"></span>Temperatura: <span id="temp">--</span><span class="unidade">°C</span></h3>
     <canvas id="chartTemp"></canvas>
   </div>
 
   <div class="grafico-container">
-    <h3><span style="background:green;"></span>Umidade: <span id="umid">--</span><span class="unidade"> %</span></h3>
+    <h3><span style="background:green;"></span>Umidade: <span id="umid">--</span><span class="unidade">%</span></h3>
     <canvas id="chartUmid"></canvas>
   </div>
 
   <div class="grafico-container">
-    <h3><span style="background:darkblue;"></span>Oxigênio Dissolvido: <span id="oxig">--</span><span class="unidade"> mg/L</span></h3>
+    <h3><span style="background:darkblue;"></span>Oxigênio Dissolvido: <span id="oxig">--</span><span class="unidade">mg/L</span></h3>
     <canvas id="chartOxig"></canvas>
   </div>
+
+  <button id="resetBtn">🔁 Resetar Gráficos</button>
 
   <footer>© Direitos autorais de David Maciel</footer>
 
@@ -172,6 +188,14 @@ Autor: David Maciel (Smart SAAG)
       type: 'bar',
       data: { labels: ['Leitura Atual'], datasets: [{ label: 'Oxigênio Dissolvido (mg/L)', data: [0], backgroundColor: 'darkblue' }] },
       options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, suggestedMax: 15 } } }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      dadosTemp.length = 0;
+      dadosUmid.length = 0;
+      labels.length = 0;
+      chartTemp.update();
+      chartUmid.update();
     });
 
     client.on("message", (topic, message) => {
